@@ -8,6 +8,16 @@ Customers frequently ask how MongoDB Atlas compares to Redis for caching and low
 
 The value lies in the **relative comparison**, not the absolute numbers. Both systems run the same workloads, same dataset, same concurrency levels, and same measurement methodology.
 
+## Before You Add a Cache
+
+It's common for teams to introduce an in-memory caching layer like Redis without first quantifying their actual latency or throughput requirements. The assumption is that "faster is better", but every additional data layer adds operational complexity: cache invalidation logic, consistency guarantees, extra infrastructure to provision and monitor, and a larger failure surface. All of this translates directly into engineering cost and cognitive overhead.
+
+The purpose of this benchmark is to show the **relative** performance between MongoDB Atlas and ElastiCache Redis -- but the choice of technology should always be driven by **business requirements**, not benchmarks in isolation.
+
+For example: your application may need low latency, but is 20ms good enough, or do you need to pay the additional tax -- in cost, complexity, and maintenance burden -- to bring it down to 5ms? If so, what is the business value that drives that requirement? A 15ms improvement may be critical for a real-time trading platform but irrelevant for a back-office dashboard. Understanding the answer to that question before reaching for another data layer can save significant complexity and cost.
+
+The results here show that MongoDB Atlas delivers single-digit millisecond latency for many access patterns out of the box. If that meets your requirements, you may not need a separate caching tier at all.
+
 ## What It Tests
 
 Six workloads cover common data access patterns:
