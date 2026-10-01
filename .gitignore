@@ -1,0 +1,30 @@
+# Secrets
+config.env
+
+# Terraform
+terraform/bench-key.pem
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+
+# Go
+benchmark/benchmark-tool
+benchmark/vendor/
+
+# Python
+__pycache__/
+*.pyc
+
+# Results (keep report and CSV templates; ignore secrets and transient files)
+results/connections.env
+results/network_rtt.txt
+results/results/
+results/**/*.status.txt
+results/seed_*.log
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/
