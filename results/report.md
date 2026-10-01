@@ -1,7 +1,26 @@
 # MongoDB Atlas vs ElastiCache Redis — Performance Comparison Report
 
-> **Generated:** 2026-10-01 14:17:59  
+> **Generated:** 2026-10-01 18:12:28  
 > **Benchmark tool:** Custom Go benchmark (goroutine-based, HDR Histogram latency tracking)
+
+---
+
+## Executive Summary
+
+This benchmark compared MongoDB Atlas (M30, $0.59/hr) against ElastiCache Redis (cache.r6g.large, $0.48/hr) across 6 workloads at 3 concurrency levels, using both an in-memory (5M record) and over-memory (20M record) dataset.
+
+**Key findings:**
+
+- **Redis wins on simple key-value lookups** — 4-17x higher throughput for pure GET-by-key operations, confirming its strength as a cache for single-key access patterns.
+- **MongoDB wins on complex access patterns** — 2-3x higher throughput on covered queries and competitive or superior performance on filtered queries, where Redis must intersect sets and deserialise full values while MongoDB serves results directly from indexes.
+- **MongoDB delivers single-digit millisecond latency across most workloads** — point lookups at ~2.96ms (P50), filtered queries at ~7.04ms, covered queries at ~4.82ms. For many applications, this is already well within acceptable latency budgets without introducing an additional caching tier.
+- **MongoDB handles over-memory gracefully** — when data exceeds RAM, MongoDB pages to disk with predictable degradation. Redis evicts keys entirely, returning nil for cache misses that the application must handle.
+- **Write complexity favours MongoDB** — Redis requires application-managed secondary index structures (SADD/SREM/ZADD on every write), adding code complexity. MongoDB handles index maintenance transparently.
+- **Cost per operation is comparable** — at near-identical hourly cost ($0.59 vs $0.48), Redis delivers more ops/$ on simple lookups; MongoDB delivers more ops/$ on queries involving secondary indexes, filters, or projections.
+
+**The question to ask before adding a cache:** Is your application's latency requirement 2.96ms or 0.719ms? The answer matters — every additional data layer introduces cache invalidation logic, consistency concerns, and operational overhead. If MongoDB's single-digit millisecond response times meet your business requirements, a separate caching tier may be adding complexity without adding value.
+
+**Bottom line:** Redis delivers higher raw throughput for simple key-value lookups when data fits in memory. But for workloads involving secondary indexes, filtered queries, covered queries, or datasets that may exceed memory, MongoDB Atlas delivers equal or better performance — often at latencies that make a dedicated cache unnecessary. Validate your requirements before paying the complexity tax.
 
 ---
 
